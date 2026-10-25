@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>داشبورد المشروع، مثال</title>
+<meta name="description" content="نسخة مثال لداشبورد متابعة مشروع هوية بصرية. كل البيانات وهمية.">
+<meta name="robots" content="noindex">
+<link rel="preload" href="fonts/thmanyahsans-Regular.otf" as="font" type="font/otf" crossorigin>
+<link rel="preload" href="fonts/thmanyahserifdisplay-Bold.otf" as="font" type="font/otf" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&family=Tajawal:wght@400;500;700&display=swap">
+<style>
+@font-face{font-family:"TSD";font-weight:500 800;font-display:swap;src:local("thmanyahserifdisplay-Bold"),url("fonts/thmanyahserifdisplay-Bold.otf") format("opentype")}
+@font-face{font-family:"TS";font-weight:400;font-display:swap;src:local("thmanyahsans-Regular"),url("fonts/thmanyahsans-Regular.otf") format("opentype")}
+@font-face{font-family:"TS";font-weight:500 800;font-display:swap;src:local("thmanyahsans-Bold"),url("fonts/thmanyahsans-Bold.otf") format("opentype")}
+:root{
+--bg:#F3F7FB;--card:#ffffff;--ink:#0F1E36;--muted:#5E6B80;--line:#DDE5EF;
+--brand:#12284C;--brand-2:#12284C;--on-brand:#EAF2FF;--gold:#F19F19;
+--work:#B86E00;--work-bg:#FFF1DC;--done:#0E9F8F;--done-bg:#DFF5F1;--wait:#E04848;--wait-bg:#FFE6E6;--idle:#6B778A;--idle-bg:#E9EEF4;
+--display:"TSD","Alexandria","Tajawal",Tahoma,sans-serif;--body:"TS","Tajawal",Tahoma,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0A1324;--card:#122038;--ink:#E8EEF7;--muted:#9AA8BE;--line:#1F3150;--brand:#0C1A33;--brand-2:#EAF2FF;--on-brand:#EAF2FF;--gold:#F19F19;--work:#F19F19;--work-bg:#3A2A0E;--done:#2DD4BF;--done-bg:#0F3330;--wait:#FF8A8A;--wait-bg:#3D1C22;--idle:#9AA8BE;--idle-bg:#1A2840;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0A1324;--card:#122038;--ink:#E8EEF7;--muted:#9AA8BE;--line:#1F3150;--brand:#0C1A33;--brand-2:#EAF2FF;--on-brand:#EAF2FF;--gold:#F19F19;--work:#F19F19;--work-bg:#3A2A0E;--done:#2DD4BF;--done-bg:#0F3330;--wait:#FF8A8A;--wait-bg:#3D1C22;--idle:#9AA8BE;--idle-bg:#1A2840;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.65;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--brand)}
+.in{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--brand);color:var(--on-brand);border-bottom:3px solid var(--gold)}
+.bar .in{padding-block:14px 12px;display:flex;flex-direction:column;gap:12px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand h1{font-family:var(--display);font-size:26px;margin:0;font-weight:700;letter-spacing:.2px}
+.brand small{opacity:.75;font-size:13px}
+.demo{font-family:var(--body);font-size:12px;font-weight:700;background:var(--gold);color:#12284C;border-radius:20px;padding:2px 10px;align-self:center}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav a{color:var(--on-brand);text-decoration:none;font-size:13px;padding:5px 12px;border:1px solid rgba(245,236,220,.28);border-radius:20px}
+nav a:hover,nav a:focus-visible{background:rgba(245,236,220,.14);outline:none}
+.stats{display:grid;grid-template-columns:1.8fr repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:rgba(253,244,227,.07);border:1px solid rgba(241,159,25,.4);border-radius:12px;padding:10px 14px;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.stat .k{font-size:12px;opacity:.75}
+.stat .v{font-family:var(--display);font-size:22px;font-weight:700;line-height:1.25;font-variant-numeric:tabular-nums}
+.stat .v{color:var(--on-brand)}.stat .k{color:var(--gold);opacity:1;font-size:12px;letter-spacing:.3px}.stat .v em{font-style:normal;font-size:14px;opacity:.7;font-weight:500}
+.stat.now .v{font-size:16px;font-family:var(--body);font-weight:700}
+.prog{height:6px;background:rgba(245,236,220,.18);border-radius:4px;margin-top:6px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--gold);border-radius:4px}
+main .in{padding-block:22px 48px;display:flex;flex-direction:column;gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;min-width:0}
+h2{font-family:var(--display);font-size:18px;margin:0 0 12px;font-weight:700;color:var(--brand-2);display:flex;align-items:center;justify-content:space-between;gap:8px}
+:root[data-theme="dark"] h2{color:var(--gold)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) h2{color:var(--gold)}}
+h2 .hint{font-family:var(--body);font-size:12px;font-weight:500;color:var(--muted)}
+.notice{background:var(--work-bg);color:var(--work);border:1px dashed var(--work);border-radius:12px;padding:10px 14px;font-size:14px;font-weight:700}
+.track{display:grid;grid-template-columns:repeat(10,minmax(84px,1fr));gap:8px;overflow-x:auto;padding-bottom:4px}
+.pg{border-radius:10px;border:1px solid var(--line);padding:8px;display:flex;flex-direction:column;gap:6px;cursor:pointer;background:var(--bg);text-align:start;font:inherit;color:inherit}
+.pg:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.pg .sheet{aspect-ratio:1.45;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:20px;font-weight:700}
+.pg b{font-size:12px;font-weight:700;line-height:1.3}
+.pg span{font-size:11px;color:var(--muted)}
+.s-done .sheet{background:var(--done-bg);color:var(--done)}
+.s-work .sheet{background:var(--work-bg);color:var(--work)}
+.s-idle .sheet{background:var(--idle-bg);color:var(--idle)}
+.pg.sel{border-color:var(--brand-2);box-shadow:0 0 0 1px var(--brand-2)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px;vertical-align:-1px}
+.detail{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--bg);font-size:14px;min-height:22px}
+.grid3{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:20px;align-items:start}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.pill{font-size:12px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap}
+.p-work{background:var(--work-bg);color:var(--work)}.p-done{background:var(--done-bg);color:var(--done)}.p-wait{background:var(--wait-bg);color:var(--wait)}.p-idle{background:var(--idle-bg);color:var(--idle)}
+ul{list-style:none;margin:0;padding:0}
+.row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0;padding-top:0}
+.row .t{min-width:0}.row .t b{display:block;font-weight:700}.row .t span{color:var(--muted);font-size:13px}
+.q{padding:12px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.q:first-child{border-top:0;padding-top:0}
+.q .d{color:var(--muted);font-size:13px}
+.q .qt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+button{font:inherit;font-size:14px;padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--brand-2)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+button.pick{background:var(--brand-2);color:var(--on-brand);border-color:var(--brand-2)}
+:root[data-theme="dark"] button.pick{color:#12284C}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.pick{color:#12284C}}
+.own{display:flex;gap:6px}
+input,textarea{font:inherit;font-size:14px;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);min-width:0;box-sizing:border-box}
+.own input{flex:1}
+textarea{width:100%;min-height:72px;resize:vertical}
+.ans{font-size:13px;color:var(--done);font-weight:700}
+.empty{color:var(--muted);font-size:14px;margin:0}
+.msgs li{padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.msgs li small{display:block;color:var(--muted);font-size:12px}
+.road{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;position:relative}
+.step{padding:0 6px;text-align:center;position:relative}
+.step .dot{width:30px;height:30px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;position:relative;z-index:1;border:2px solid var(--line);background:var(--card);color:var(--muted)}
+.step::before{content:"";position:absolute;top:15px;inset-inline-start:50%;width:100%;height:2px;background:var(--line)}
+.step:last-child::before{display:none}
+.step.ok .dot{background:var(--done);border-color:var(--done);color:var(--card)}
+.step.ok::before{background:var(--done)}
+.step.now .dot{background:var(--gold);border-color:var(--gold);color:var(--brand)}
+.step b{display:block;font-size:13px}.step span{font-size:12px;color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.fact{background:var(--bg);border-radius:12px;padding:12px}
+.fact .n{font-family:var(--display);font-size:24px;font-weight:700;color:var(--brand-2);font-variant-numeric:tabular-nums}
+:root[data-theme="dark"] .fact .n{color:var(--gold)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .fact .n{color:var(--gold)}}
+.fact p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.log li{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+.log li:first-child{border-top:0}
+.log time{color:var(--muted);font-size:12px;white-space:nowrap;min-width:64px}
+details{border-top:1px solid var(--line);padding:10px 0}
+details:first-of-type{border-top:0}
+summary{cursor:pointer;font-weight:700}
+details p{margin:6px 0 0;color:var(--muted);font-size:14px}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:0 16px 32px}
+@media (max-width:1000px){.grid3{grid-template-columns:1fr 1fr}.grid3>:first-child{grid-column:1/-1}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat.now{grid-column:1/-1}.facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.grid3,.grid2{grid-template-columns:1fr}.grid3>:first-child{grid-column:auto}.road{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:16px}.step:nth-child(3)::before{display:none}nav{display:none}.brand h1{font-size:22px}.stats{gap:8px}}
+@media (prefers-reduced-motion:no-preference){.prog i{transition:width .8s ease}}
+.ringstat{flex-direction:row!important;align-items:center;justify-content:flex-start!important;gap:12px!important}
+.ring{flex:none;display:block}
+.ring .arc{transition:stroke-dasharray 1s ease}
+.fact{display:flex;align-items:center;gap:10px}
+.fact .n{font-size:20px!important}
+.chips{display:flex;gap:6px;font-family:var(--body);flex-wrap:wrap}
+.count{font-family:var(--body);font-size:12px;font-weight:700;background:var(--gold);color:#12284C;border-radius:20px;padding:1px 9px;margin-inline-start:6px;vertical-align:2px}
+.pg{transition:transform .18s ease,box-shadow .18s ease}
+.pg:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(18,40,76,.12)}
+.card{transition:border-color .2s}
+.card:hover{border-color:color-mix(in srgb,var(--gold) 35%,var(--line))}
+.stat .k::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-inline-end:6px;vertical-align:2px}
+.log li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--done);margin-top:7px}
+.step.now .dot{box-shadow:0 0 0 5px color-mix(in srgb,var(--gold) 25%,transparent)}
+::selection{background:var(--gold);color:#12284C}
+@media (prefers-reduced-motion:reduce){.pg,.ring .arc,.card{transition:none}.pg:hover{transform:none}}
+.live{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-inline-end:6px;vertical-align:1px}
+@media (prefers-reduced-motion:no-preference){.live{animation:pulse 2s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}}
+</style>
+</head>
+<body>
+<header class="bar">
+<div class="in">
+<div class="top">
+<div class="brand"><h1>داشبورد المشروع</h1><span class="demo">نسخة مثال</span><small><span class="live"></span>مقهى نخلة (اسم وهمي) · آخر تحديث: الأحد، 6:45 م</small></div>
+<nav aria-label="أقسام"><a href="#stages">المراحل</a><a href="#decide">قراراتك</a><a href="#team">الفريق</a><a href="#road">الخطة</a><a href="#numbers">الأرقام</a><a href="#log">الإنجاز</a></nav>
+</div>
+<div class="stats">
+<div class="stat now"><div class="k">وين وصلنا الحين</div><div class="v">7 من 10 مراحل منجزة. الجاي: اللافتة والزي ودليل الهوية</div><div class="prog"><i style="width:70%"></i></div></div>
+<div class="stat ringstat"><svg class="ring" viewBox="0 0 36 36" width="52" height="52" role="img" aria-label="70%"><circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(234,242,255,.18)" stroke-width="3.4"/><circle class="arc" cx="18" cy="18" r="15.5" fill="none" stroke="var(--gold)" stroke-width="3.4" stroke-linecap="round" pathLength="100" stroke-dasharray="70 100" transform="rotate(-90 18 18)"/><text x="18" y="21.2" text-anchor="middle" font-size="9" font-weight="700" fill="#EAF2FF">70%</text></svg><div><div class="k">الهوية البصرية</div><div class="v" style="font-size:16px">منجز</div></div></div>
+<div class="stat"><div class="k">ينتظر قرارك</div><div class="v" id="pendingCount">3 <em>أسئلة</em></div></div>
+<div class="stat"><div class="k">شغال الحين</div><div class="v">2 <em>مراحل</em></div></div>
+</div>
+</div>
+</header>
+
+<main><div class="in">
+
+<div class="notice" role="note">هذي نسخة مثال للعرض. المشروع والأسماء والأرقام كلها وهمية، والأزرار تشتغل داخل الصفحة بس وما يتحفظ شي.</div>
+
+<section class="card" id="stages">
+<h2><span>مراحل المشروع <span class="count">7/10</span></span><span class="hint">اضغط أي مرحلة لتفاصيلها</span></h2>
+<div class="track" id="track"></div>
+<div class="legend"><span><i style="background:#8B5E3C"></i>الهوية الأساسية</span><span><i style="background:#3E7C6B"></i>الرقمي</span><span><i style="background:#C9A66B"></i>المطبوعات</span><span><i style="background:#2f4f8a"></i>التسليم</span><span style="width:100%;height:0"></span><span><i style="background:var(--done)"></i>معتمد منك</span><span><i style="background:var(--work)"></i>جاهز وينتظر مراجعتك</span><span><i style="background:var(--idle)"></i>ما بدأ</span></div>
+<div class="detail" id="pageDetail" aria-live="polite">اختر مرحلة.</div>
+</section>
+
+<div class="grid3">
+<section class="card" id="decide">
+<h2>ينتظر قرارك <span class="hint">اضغط جواب أو اكتب جوابك</span></h2>
+<div id="qs"></div>
+</section>
+
+<section class="card" id="team">
+<h2>الفريق <span class="chips"><span class="pill p-done">2 خلصوا</span><span class="pill p-work">2 شغالين</span><span class="pill p-idle">1 لاحقاً</span></span></h2>
+<ul>
+<li class="row"><div class="t"><b>مدير المشروع</b><span>يتابع المراحل ويرتب أسئلتك أول بأول</span></div><span class="pill p-work">شغال</span></li>
+<li class="row"><div class="t"><b>مصمم الهوية</b><span>خلّص الشعار والألوان. الحين على المنيو</span></div><span class="pill p-work">شغال</span></li>
+<li class="row"><div class="t"><b>كاتب المحتوى</b><span>نصوص المنيو والسوشيال جاهزة</span></div><span class="pill p-done">خلص</span></li>
+<li class="row"><div class="t"><b>مصمم السوشيال</b><span>14 من 20 بوست جاهزة للمراجعة</span></div><span class="pill p-done">خلص الدفعة</span></li>
+<li class="row"><div class="t"><b>المطبعة</b><span>تبدأ بعد اعتماد اللافتة والمنيو</span></div><span class="pill p-idle">لاحقاً</span></li>
+</ul>
+</section>
+
+<section class="card">
+<h2>رسالة للفريق</h2>
+<textarea id="msg" placeholder="اكتب أي ملاحظة تبي الفريق يعرفها"></textarea>
+<div style="display:flex;gap:10px;align-items:center;margin-top:8px"><button id="send" type="button">أرسل</button><span id="sent" class="ans" aria-live="polite"></span></div>
+<p class="empty" style="font-size:12px;margin-top:6px">مثال: الرسالة تظهر هنا بس وما توصل لأحد.</p>
+<ul class="msgs" id="msgs" style="margin-top:8px"></ul>
+</section>
+</div>
+
+<section class="card" id="road">
+<h2>الخطة</h2>
+<div class="road">
+<div class="step ok"><div class="dot">1</div><b>الفكرة</b><span>بحث وإلهام</span></div>
+<div class="step ok"><div class="dot">2</div><b>الشعار</b><span>معتمد</span></div>
+<div class="step now"><div class="dot">3</div><b>التطبيقات</b><span>منيو وسوشيال</span></div>
+<div class="step"><div class="dot">4</div><b>اللافتة</b><span>الواجهة</span></div>
+<div class="step"><div class="dot">5</div><b>دليل الهوية</b><span>ملف كامل</span></div>
+<div class="step"><div class="dot">6</div><b>التسليم</b><span>كل الملفات</span></div>
+</div>
+</section>
+
+<div class="grid2">
+<section class="card" id="numbers">
+<h2>أرقام المشروع <span class="hint">أرقام مثال</span></h2>
+<div class="facts">
+<div class="fact"><svg class="ring" viewBox="0 0 36 36" width="46" height="46" role="img" aria-label="70%"><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--line)" stroke-width="3.4"/><circle class="arc" cx="18" cy="18" r="15.5" fill="none" stroke="var(--gold)" stroke-width="3.4" stroke-linecap="round" pathLength="100" stroke-dasharray="70 100" transform="rotate(-90 18 18)"/><text x="18" y="21.2" text-anchor="middle" font-size="9" font-weight="700" fill="var(--ink)">70%</text></svg><div><div class="n">14/20</div><p>بوست سوشيال جاهز</p></div></div>
+<div class="fact"><svg class="ring" viewBox="0 0 36 36" width="46" height="46" role="img" aria-label="75%"><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--line)" stroke-width="3.4"/><circle class="arc" cx="18" cy="18" r="15.5" fill="none" stroke="var(--gold)" stroke-width="3.4" stroke-linecap="round" pathLength="100" stroke-dasharray="75 100" transform="rotate(-90 18 18)"/><text x="18" y="21.2" text-anchor="middle" font-size="9" font-weight="700" fill="var(--ink)">75%</text></svg><div><div class="n">3/4</div><p>صفحات المنيو</p></div></div>
+<div class="fact"><svg class="ring" viewBox="0 0 36 36" width="46" height="46" role="img" aria-label="33%"><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--line)" stroke-width="3.4"/><circle class="arc" cx="18" cy="18" r="15.5" fill="none" stroke="var(--gold)" stroke-width="3.4" stroke-linecap="round" pathLength="100" stroke-dasharray="33 100" transform="rotate(-90 18 18)"/><text x="18" y="21.2" text-anchor="middle" font-size="9" font-weight="700" fill="var(--ink)">33%</text></svg><div><div class="n">1/3</div><p>جولات تعديل مستخدمة</p></div></div>
+<div class="fact"><svg class="ring" viewBox="0 0 36 36" width="46" height="46" role="img" aria-label="60%"><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--line)" stroke-width="3.4"/><circle class="arc" cx="18" cy="18" r="15.5" fill="none" stroke="var(--gold)" stroke-width="3.4" stroke-linecap="round" pathLength="100" stroke-dasharray="60 100" transform="rotate(-90 18 18)"/><text x="18" y="21.2" text-anchor="middle" font-size="9" font-weight="700" fill="var(--ink)">60%</text></svg><div><div class="n">18/30</div><p>يوم مضى من المدة</p></div></div>
+</div>
+<details open><summary>وش نحتاج منك عشان نكمل</summary><p>1. اختيار خلفية المنيو. 2. اعتماد موقع اللافتة على الواجهة. 3. عدد البوستات الشهرية.</p></details>
+<details><summary>وش بتستلم في النهاية</summary><p>الشعار بكل نسخه، دليل هوية PDF، ملفات المنيو للطباعة، 20 بوست سوشيال، تصميم اللافتة، وتصاميم الأكواب والأكياس.</p></details>
+<details><summary>المدة والتسليم</summary><p>المدة 30 يوم (مثال). باقي 12 يوم، والتسليم النهائي بعد اعتماد دليل الهوية.</p></details>
+</section>
+
+<section class="card" id="log">
+<h2>اللي أنجزناه</h2>
+<ul class="log">
+<li><time>اليوم 18</time><span>تصاميم الأكواب والأكياس جاهزة للمراجعة</span></li>
+<li><time>اليوم 16</time><span>دفعة أولى من 14 بوست سوشيال</span></li>
+<li><time>اليوم 14</time><span>3 صفحات من المنيو مبنية</span></li>
+<li><time>اليوم 11</time><span>اعتمدت الخطوط العربية والإنجليزية</span></li>
+<li><time>اليوم 9</time><span>اعتمدت لوحة الألوان (بني، رملي، أخضر نخيل)</span></li>
+<li><time>اليوم 6</time><span>اعتمدت الشعار من بين 3 خيارات</span></li>
+<li><time>اليوم 2</time><span>لوحة الإلهام والبحث عن المنافسين</span></li>
+</ul>
+</section>
+</div>
+
+</div></main>
+<footer>نسخة مثال للعرض فقط · كل البيانات وهمية</footer>
+
+<script>
+const STAGES=[
+{n:1,name:"البحث والإلهام",c:"#8B5E3C",s:"done",st:"معتمد",d:"لوحة إلهام ودراسة 5 مقاهي منافسة في الحي (مثال)."},
+{n:2,name:"الشعار",c:"#8B5E3C",s:"done",st:"معتمد",d:"3 خيارات شعار، واخترت خيار النخلة مع فنجان القهوة."},
+{n:3,name:"الألوان",c:"#8B5E3C",s:"done",st:"معتمد",d:"بني القهوة، رملي فاتح، وأخضر النخيل كلون مميز."},
+{n:4,name:"الخطوط",c:"#8B5E3C",s:"done",st:"معتمد",d:"خط عربي وخط إنجليزي متناسقين للعناوين والنصوص."},
+{n:5,name:"المنيو",c:"#C9A66B",s:"work",st:"راجعها",d:"3 من 4 صفحات جاهزة: المشروبات الحارة، الباردة، والحلا. ينتظر قرارك على لون الخلفية."},
+{n:6,name:"السوشيال",c:"#3E7C6B",s:"work",st:"راجعها",d:"14 بوست جاهز: افتتاح، منيو، وعروض. الباقي بعد ما تحدد العدد الشهري."},
+{n:7,name:"الأكواب والتغليف",c:"#C9A66B",s:"work",st:"راجعها",d:"تصميم الكوب الورقي بمقاسين، والكيس، والستيكر."},
+{n:8,name:"اللافتة",c:"#C9A66B",s:"idle",st:"ما بدأ",d:"لافتة الواجهة. تبدأ بعد ما تختار مكانها."},
+{n:9,name:"الزي والبطاقات",c:"#C9A66B",s:"idle",st:"ما بدأ",d:"مريلة الباريستا، كرت الولاء، وكرت العمل."},
+{n:10,name:"دليل الهوية",c:"#2f4f8a",s:"idle",st:"ما بدأ",d:"ملف PDF يجمع كل قواعد استخدام الهوية، وبعده التسليم النهائي."}];
+
+const QUESTIONS=[
+{id:"q1",title:"خلفية المنيو: أي لون؟",detail:"الصفحات الثلاث جاهزة بالخيارين، ونحتاج نثبت واحد.",options:["رملي فاتح","بني غامق","أبيض"]},
+{id:"q2",title:"اللافتة: وين مكانها على الواجهة؟",detail:"المقاس يتغير حسب المكان.",options:["فوق الباب","جانبية بارزة"]},
+{id:"q3",title:"السوشيال: كم بوست بالشهر؟",detail:"عشان نكمل باقي الدفعة على نفس الخطة.",options:["12","20","30"]}];
+
+(function(){
+  const tr=document.getElementById('track'),det=document.getElementById('pageDetail');
+  STAGES.forEach(p=>{const b=document.createElement('button');b.type='button';b.id='pg-'+p.n;b.className='pg s-'+p.s;
+    b.innerHTML='<div class="sheet">'+p.n+'</div><b></b><span></span>';if(p.c)b.style.borderTop='4px solid '+p.c;b.querySelector('b').textContent=p.name;b.querySelector('span').textContent=p.st;
+    b.onclick=()=>{document.querySelectorAll('.pg').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');det.textContent='مرحلة '+p.n+' · '+p.name+': '+p.d};
+    tr.appendChild(b)});
+  const first=document.getElementById('pg-5');if(first)first.click();
+})();
+
+(function(){
+  const qsEl=document.getElementById('qs'),pc=document.getElementById('pendingCount'),answers={};
+  function count(){const open=QUESTIONS.filter(q=>!answers[q.id]).length;pc.innerHTML=open+' <em>'+(open===1?'سؤال':open===0?'أسئلة':'أسئلة')+'</em>'}
+  function render(){
+    qsEl.textContent='';
+    QUESTIONS.forEach(q=>{
+      const box=document.createElement('div');box.className='q';
+      const head=document.createElement('div');head.className='qt';
+      const t=document.createElement('b');t.textContent=q.title;head.appendChild(t);
+      const st=document.createElement('span');st.className='pill '+(answers[q.id]?'p-done':'p-wait');st.textContent=answers[q.id]?'تم':'ينتظر';head.appendChild(st);
+      box.appendChild(head);
+      if(q.detail){const p=document.createElement('span');p.className='d';p.textContent=q.detail;box.appendChild(p)}
+      const opts=document.createElement('div');opts.className='opts';
+      q.options.forEach(o=>{const b=document.createElement('button');b.type='button';b.textContent=o;if(answers[q.id]===o)b.className='pick';b.onclick=()=>{answers[q.id]=o;render()};opts.appendChild(b)});
+      box.appendChild(opts);
+      const own=document.createElement('div');own.className='own';const inp=document.createElement('input');inp.placeholder='أو اكتب جوابك';inp.setAttribute('aria-label','جوابك على: '+q.title);
+      const ob=document.createElement('button');ob.type='button';ob.textContent='أرسل';
+      ob.onclick=()=>{const v=inp.value.trim();if(!v){inp.placeholder='اكتب جوابك أول';inp.focus();return}answers[q.id]=v;render()};
+      own.appendChild(inp);own.appendChild(ob);box.appendChild(own);
+      if(answers[q.id]){const a=document.createElement('span');a.className='ans';a.textContent='جوابك: '+answers[q.id]+' (مثال، ما يتحفظ)';box.appendChild(a)}
+      qsEl.appendChild(box)});
+    count();
+  }
+  render();
+
+  const msgEl=document.getElementById('msgs');
+  const msgs=[{text:"أهلاً! هنا تشوف كل جديد في مشروعك، وتجاوب على أسئلتنا من مكان واحد.",from:"team",at:"اليوم 18 · 5:30 م"}];
+  function renderMsgs(){msgEl.textContent='';msgs.forEach(m=>{const li=document.createElement('li');li.textContent=m.text;const sm=document.createElement('small');sm.textContent=(m.from==='team'?'مدير المشروع · ':'أنت · ')+m.at;li.appendChild(sm);msgEl.appendChild(li)})}
+  renderMsgs();
+  document.getElementById('send').onclick=()=>{
+    const ta=document.getElementById('msg'),txt=ta.value.trim(),s=document.getElementById('sent');
+    if(!txt){s.textContent='اكتب الرسالة أول';return}
+    msgs.unshift({text:txt,from:'client',at:'الحين'});renderMsgs();ta.value='';s.textContent='وصلت (مثال)';
+  };
+})();
+</script>
+</body>
+</html>
